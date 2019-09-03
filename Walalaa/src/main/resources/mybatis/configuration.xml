@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="mybatis/mappers/users_mapping.xml" />
+		<mapper resource="mybatis/mappers/chat_mapping.xml" />
+		<mapper resource="mybatis/mappers/comment_mapping.xml" />
+		<mapper resource="mybatis/mappers/chatmem_mapping.xml" />
+		<mapper resource="mybatis/mappers/chatlog_mapping.xml" />
+		<mapper resource="mybatis/mappers/customBadword_mapping.xml" />
+		<mapper resource="mybatis/mappers/objection_mapping.xml" />
+		<mapper resource="mybatis/mappers/chatfilter_mapping.xml" />
+	</mappers>
+</configuration>

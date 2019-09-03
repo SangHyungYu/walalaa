@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="ChatFilter">
+	<select id="getExceptWord" resultType="com.utf18.site.vo.BadwordVO">
+		SELECT * FROM BADWORD
+	</select>
+	
+	<select id="getAddword" resultType="com.utf18.site.vo.Disc_wordVO">
+		SELECT DISC_WORD.add_word, DISC_WORD.iswhite FROM BADWORD, DISC_WORD WHERE BADWORD.BADWORD = #{badword} AND BADWORD.BADWORD_NUM = DISC_WORD.BADWORD_NUM
+	</select>
+	
+
+</mapper>

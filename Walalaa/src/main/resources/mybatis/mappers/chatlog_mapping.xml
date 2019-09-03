@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ChatLogDAO">
+	<!-- 채팅내용 chatlog DB에 삽입하기 -->
+	<insert id="addChatLog" parameterType="com.utf18.site.vo.ChatLogVO">
+		INSERT INTO CHATLOG(EMAIL, CONTENT, TIME, NUM) VALUES(#{email}, #{content}, #{time}, #{num})
+	</insert>
+
+	<!-- 챗 로그 가져오기 -->
+	<select id="getChatLog" parameterType="java.lang.Integer" resultType="com.utf18.site.vo.ChatLogVO">
+		SELECT * FROM CHATLOG WHERE NUM = #{num} ORDER BY time ASC
+	</select>
+
+	<!-- 챗로그 배드워드 상태 설정 (사용x?) -->
+	<update id="updateBadwordStatus" parameterType="java.lang.String">
+		UPDATE CHATLOG SET BADWORD = '1' WHERE ID = #{id}
+	</update>
+
+	<!-- 업로드된 영상의 챗정보 가져오기 -->
+	<select id="getUploadedDataInfo" parameterType="java.lang.Integer" resultType="com.utf18.site.vo.ChatLogVO">
+		SELECT USERS.NICKNAME, CHATLOG.CONTENT, CHATLOG.TIME, USERS.PROFILE
+		from CHATLOG, USERS
+		WHERE CHATLOG.NUM = #{num} AND CHATLOG.EMAIL=USERS.EMAIL
+		ORDER BY CHATLOG.TIME ASC
+	</select>
+</mapper>

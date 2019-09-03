@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserDAO">
+
+	<!-- 회원가입 -->
+	<insert id="insert" parameterType="com.utf18.site.vo.UserVO">
+		INSERT INTO USERS(EMAIL, PASSWORD, NICKNAME, BLACKLIST, OPERLIST, MANAGE_WARNCOUNT, APPLY, SUBSCRIBE, PROFILE, BGIMG)
+		VALUES (#{email}, #{password}, #{nickname}, '(black)', '(oper)', 3, 0, '(sub)', '/assets/images/userProfile_basic.png', '/assets/images/bg_basic.png')
+	</insert>
+
+	<!-- 이메일을 통해 유저의 정보 가져오기 -->
+	<select id="getUserVO" resultType="com.utf18.site.vo.UserVO">
+		SELECT * FROM USERS WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 아이디 중복 체크 -->
+	<select id="idcheck" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM USERS WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 닉네임 중복 체크 -->
+	<select id="nicknamecheck" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM USERS WHERE NICKNAME = #{nickname}
+	</select>
+
+	<!-- 비밀번호 일치하는지 체크 -->
+	<select id="checkPassword" parameterType="String" resultType="String">
+		SELECT PASSWORD FROM USERS WHERE EMAIL = #{email}
+	</select>
+	
+	<!-- 닉네임 가져오기 체크 -->
+	<select id="getNickName" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT NICKNAME FROM USERS WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 사용자 '경고횟수' 설정 -->
+	<update id="setWarnCount" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE users SET manage_warncount = #{manage_warncount} WHERE EMAIL = #{email}
+	</update>
+
+	<!-- 해당 방송자의 이메일을 통해 제한 경고횟수 정보 가져오기-->
+	<select id="limitWarnCount" parameterType="String" resultType="int">
+		SELECT MANAGE_WARNCOUNT FROM USERS WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 적용 0 => 유저가 작성한 비속어 리스트 채팅에 적용안함 -->
+	<update id="apply0" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE users SET apply = '0' WHERE EMAIL = #{email}
+	</update>
+
+	<!-- 적용 1 => 유저가 작성한 비속어 리스트 채팅에 적용 함 -->
+	<update id="apply1" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE users SET apply = '1' WHERE EMAIL = #{email}
+	</update>
+
+	<!-- 구독하기 버튼 클릭시 상태 업데이트 -->
+	<update id="subscribe" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE users SET SUBSCRIBE = #{subscribe} WHERE EMAIL = #{email}
+	</update>
+
+	<!-- 사용자 금지단어 적용 상태 정보 가져오기 -->
+	<select id="getApply" parameterType="String" resultType="String">
+		SELECT APPLY FROM USERS WHERE EMAIL = #{email}
+	</select>
+
+	<!-- 프사 변경 -->
+	<update id="uploadprofile" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE USERS SET PROFILE = #{profile} WHERE email = #{email}
+	</update>
+
+	<!-- 채널 배경사진 변경 -->
+	<update id="uploadbg" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE USERS SET BGIMG = #{bgimg} WHERE email = #{email}
+	</update>
+
+	<!-- 내채널 설명 수정 -->
+	<update id="changeChannelInfo" parameterType="com.utf18.site.vo.UserVO">
+		UPDATE users SET channelInfo = #{channelInfo} WHERE EMAIL = #{email}
+	</update>
+
+	<!-- 닉으로 프로필가져오기 -->
+	<select id="getUserProfile" parameterType="String" resultType="String">
+		SELECT PROFILE FROM USERS WHERE NICKNAME = #{nickname}
+	</select>
+
+	<!-- 닉으로 정보가져오기 -->
+	<select id="getUserinfo" parameterType="String"
+		resultType="com.utf18.site.vo.UserVO">
+		SELECT * FROM USERS WHERE NICKNAME = #{nickname}
+	</select>
+
+</mapper>

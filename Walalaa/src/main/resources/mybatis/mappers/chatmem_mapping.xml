@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ChatMemberDAO">
+	<!-- 현재 어떤 방에 들어가있는지 데이터추가하기 -->
+	<insert id="addRoomMember" parameterType="com.utf18.site.vo.ChatVO">
+		INSERT INTO CHATMEMBER(NUM, ID, ROOM, PRIROOM, WARNINGCOUNT, CHATSTATUS) VALUES(CHAT_MEMBER_SEQ.NEXTVAL, #{id}, #{room}, #{priroom}, 0, 'NOMAL')
+	</insert>
+
+	<!-- 현재 아이디가 어떤방에 들어가있는지 확인 -->
+	<select id="getRoomMember" parameterType="com.utf18.site.vo.ChatMemberVO" resultType="com.utf18.site.vo.ChatMemberVO">
+		SELECT ID,ROOM,PRIROOM, WARNINGCOUNT
+		FROM CHATMEMBER
+		WHERE ID = #{id}
+	</select>
+
+	<!-- 같은 방에 존재하는 사람정보 모두가져오기 -->
+	<select id="sameRoomList" parameterType="com.utf18.site.vo.ChatMemberVO" resultType="com.utf18.site.vo.ChatMemberVO">
+		SELECT ID, ROOM, PRIROOM
+		FROM CHATMEMBER
+		WHERE ROOM=#{room}
+	</select>
+
+	<!-- 방변경 -->
+	<update id="updateRoomMember"
+		parameterType="com.utf18.site.vo.ChatMemberVO">
+		UPDATE CHATMEMBER SET ROOM = #{room}
+		WHERE ID= #{id}
+	</update>
+
+	<!-- 채팅금지 -->
+	<update id="Nochat"
+		parameterType="com.utf18.site.vo.ChatMemberVO">
+		UPDATE CHATMEMBER SET WARNINGCOUNT = #{warningCnt}
+		WHERE
+		ID= #{id}
+	</update>
+
+	<!-- 방정보 제거 -->
+	<delete id="deleteRoomMember"
+		parameterType="com.utf18.site.vo.ChatMemberVO">
+		DELETE FROM CHATMEMBER
+		WHERE ID=#{id}
+	</delete>
+
+	<!-- 세션ID / chatmember비교 -->
+	<select id="checkChatmember"
+		resultType="com.utf18.site.vo.ChatVO">
+		SELECT * FROM CHATMEMBER
+		WHERE ID = #{id}
+	</select>
+
+	<!-- 해당 사용자의 경고횟수를 1회 증가 -->
+	<update id="plusWarningCount" parameterType="java.lang.String">
+		UPDATE CHATMEMBER
+		SET WARNINGCOUNT = WARNINGCOUNT + 1
+		WHERE ID = #{id}
+	</update>
+
+	<!--  해당 사용자의 경고횟수 정보 가져오기 -->
+	<select id="getWarningCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT WARNINGCOUNT FROM CHATMEMBER WHERE ID = #{id}
+	</select>
+
+	<!-- 해당 사용자의 채팅상태를 '채팅금지'로 변경  -->
+	<update id="updateChatStatus" parameterType="java.lang.String">
+		UPDATE CHATMEMBER
+		SET CHATSTATUS = 'NOCHAT'
+		WHERE ID= #{id}
+	</update>
+
+	<!-- 해당 사용자의 채팅상태 정보를 가져오기 -->
+	<select id="getChatStatus" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		SELECT CHATSTATUS FROM CHATMEMBER WHERE ID = #{id}
+	</select>
+
+	<!-- 해당 사용자의 경고횟수를 1회 감소  -->
+	<update id="minusWarnCnt" parameterType="java.lang.String">
+		UPDATE CHATMEMBER
+		SET WARNINGCOUNT = WARNINGCOUNT - 1 WHERE ID = #{id}
+	</update>
+
+	<!-- 해당 사용자의 채팅상태를 '일반'으로 변경 -->
+	<update id="returnChatStatus" parameterType="java.lang.String">
+		UPDATE CHATMEMBER
+		SET CHATSTATUS = 'NOMAL'
+		WHERE ID= #{id}
+	</update>
+
+	<!-- 강제 채팅 금지에 따른 문구 설정 -->
+	<update id="updateChatStatusNo" parameterType="String">
+		UPDATE CHATMEMBER
+		SET CHATSTATUS = 'NOCHATxxxx'
+		WHERE ID= #{id}
+	</update>
+
+</mapper>

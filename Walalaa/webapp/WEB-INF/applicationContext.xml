@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd
+		http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:annotation-config />
+
+	<context:component-scan	base-package="com.utf18">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+	</context:component-scan>
+
+	<!-- oracle datasource -->
+	<bean id="oracleDatasource"
+		class="oracle.jdbc.pool.OracleDataSource" destroy-method="close">
+		<property name="URL" value="jdbc:oracle:thin:@localhost:1521:orcl" />
+		<property name="user" value="scott" />
+		<property name="password" value="tiger" />
+		<property name="connectionCachingEnabled" value="true" />
+		<qualifier value="main-db" />
+	</bean>
+
+	<!-- MyBatis SqlSessionFactoryBean 설정 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="oracleDatasource" />
+		<property name="configLocation" value="classpath:mybatis/configuration.xml" />
+	</bean>
+
+	<!-- MyBatis SqlSessionTemplate 설정 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+		<!-- 파일업로드에 필요한 bean -->
+	<bean id="mulitpartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <!-- 파일업로드 용량 -->
+	    <property name="maxUploadSize" value="10485760"/>
+	</bean>
+	<!-- 파일업로드를 위한 디렉토리 설정 -->
+	<!-- String uploadPath = new String("업로드 경로") -->
+	<bean id="uploadPath" class="java.lang.String">
+	    <!-- 파일업로드 디렉토리-->
+	    <constructor-arg value="D:\"/>
+	</bean>
+		<!-- WebSocket -->
+	<websocket:handlers>
+		<websocket:mapping handler="echoHandler" path="echo.do"/>
+	<websocket:handshake-interceptors>
+		<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
+	</websocket:handshake-interceptors>
+	</websocket:handlers>
+	<bean id="echoHandler" class="com.utf18.site.util.WebSocket"/>
+		
+
+</beans>

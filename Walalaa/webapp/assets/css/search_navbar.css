@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+div.topbar{
+   height: 30px;
+   width: 100%;
+   margin-left: 0px;
+   margin-right: 0px;
+
+}
+
+div.topbar>div{
+   float: left;
+
+   height: 30px;
+   padding: 2px 0px 2px 0px;
+}
+div.topbar>div.col-xs-6{
+   padding: 8px 0px 8px 0px;
+}

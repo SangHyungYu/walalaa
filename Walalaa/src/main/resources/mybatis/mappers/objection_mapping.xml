@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ObjectionDAO">
+	<!-- 선택된 이의제기 정보 DB에 삽입 -->
+	<insert id="insertObj" parameterType="com.utf18.site.vo.ObjectionVO">
+		INSERT INTO objection(OBJNUM, CHATNUM, ID, CONTENT, APPROV_STATE, TIME) VALUES (OBJ_SEQ.NEXTVAL, #{chatnum}, #{id}, #{content}, '0', sysdate)
+	</insert>
+	
+	<!-- 해당 방의 이의제기 가져오기 -->
+	<select id="getObj" parameterType="java.lang.Integer" resultType="com.utf18.site.vo.ObjectionVO">
+		SELECT * FROM objection WHERE CHATNUM = #{chatnum}
+	</select>
+
+	<!-- 이의제기 리스트 가져오기 -->
+	<select id="getObjList" parameterType="java.lang.Integer" resultType="com.utf18.site.vo.ObjectionVO">
+		SELECT objection.objnum, objection.chatnum, objection.id, users.nickname usersNickname, objection.content, chatmember.warningcount chatmemWarningCount, objection.approv_state, chatmember.chatstatus chatmemChatstatus, objection.time
+		FROM users, objection, chatmember
+		WHERE users.email = objection.id AND chatmember.id = objection.id AND CHATNUM = #{chatnum}
+		ORDER BY objection.OBJNUM DESC
+	</select>
+	
+	<!-- 해당 이의제기 승인 -->
+	<update id="objAccept" parameterType="java.lang.Integer">
+		UPDATE OBJECTION SET APPROV_STATE = '1'
+		WHERE OBJNUM = #{objnum}
+	</update>
+
+	<!-- 해당 이의제기 거부 -->
+	<update id="objReject" parameterType="java.lang.Integer">
+		UPDATE OBJECTION SET APPROV_STATE = '2'
+		WHERE OBJNUM = #{objnum}
+	</update>
+
+	<!-- 이의제기 식별 번호로 해당 사람의 아이디 가져오기 -->
+	<select id="getObjNum" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		SELECT ID FROM OBJECTION WHERE OBJNUM = #{objnum}
+	</select>
+</mapper>
